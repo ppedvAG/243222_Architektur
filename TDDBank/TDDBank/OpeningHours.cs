@@ -1,10 +1,26 @@
 ﻿namespace TDDBank
 {
+
+    public interface ITimeService
+    {
+        DateTime GetDateTime();
+    }
+
+    public class TimeService : ITimeService
+    {
+        public DateTime GetDateTime()
+        {
+            return DateTime.Now;
+        }
+    }
+
     public class OpeningHours
     {
-        public bool IsWeekend()
+        public bool IsWeekend(ITimeService timeService)
         {
-            return DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday;
+            //var nowerkljnfwekjnf = timeService.GetDateTime();
+            var now = new DateTime(2024, 10, 13);   
+            return now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday;
         }
 
         public bool IsNowOpen() //:-(

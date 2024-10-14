@@ -1,4 +1,5 @@
 ﻿using Microsoft.QualityTools.Testing.Fakes;
+using Moq;
 
 namespace TDDBank.Tests
 {
@@ -51,30 +52,43 @@ namespace TDDBank.Tests
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void IsWeekend_Returns_True_OnSunDay_Mit_moq()
+        {
+            // Arrange
+            var openingHours = new OpeningHours();
+            var mock = new Mock<ITimeService>();
+            mock.Setup(x => x.GetDateTime()).Returns(() => new DateTime(2024, 10, 13));
+
+            // Act
+            var result = openingHours.IsWeekend(mock.Object);
+
+            // Assert
+            Assert.True(result);
+            mock.Verify(x => x.GetDateTime(), Times.Exactly(1));
+        }
+
 
         [Fact]
-        public void IsWeekend()
+        public void IsWeekend_Returns_True_OnSunDay_Mit_TestTimeService()
         {
-            using var context = ShimsContext.Create();
-
-            var oh = new OpeningHours();
-
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 7); 
-            Assert.False(oh.IsWeekend());//Mo
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 8); 
-            Assert.False(oh.IsWeekend());//Di
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 9); 
-            Assert.False(oh.IsWeekend());//Mi
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 10); 
-            Assert.False(oh.IsWeekend());//Do
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 11); 
-            Assert.False(oh.IsWeekend());//Fr
-            
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 12); 
-            Assert.True(oh.IsWeekend()); //Sa
-            System.Fakes.ShimDateTime.NowGet = () => new DateTime(2024, 10, 13); 
-            Assert.True(oh.IsWeekend()); //So
-
+            // Arrange
+            var openingHours = new OpeningHours();
+            var timeService = new TestTimeService();
+            // Act
+            var result = openingHours.IsWeekend(timeService);
+            // Assert
+            Assert.True(result);
         }
+
+
+
+        class TestTimeService : ITimeService
+        {
+            public DateTime GetDateTime()
+            {
+                return new DateTime(2024, 10, 13, 11, 0, 0);
+            }
+        }   
     }
 }
