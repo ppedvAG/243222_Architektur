@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Calculator.Tests
+﻿namespace Calculator.Tests
 {
     public class CalcTests : IDisposable
     {
