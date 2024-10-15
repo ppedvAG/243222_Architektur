@@ -12,7 +12,7 @@ namespace BeanRider.Data.Db
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        string _conString;
+        readonly string _conString;
 
         public EfContext(string conString)
         {

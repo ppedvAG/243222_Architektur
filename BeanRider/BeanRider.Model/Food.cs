@@ -10,7 +10,7 @@
         public bool Vegetarian { get; set; }
 
         // Navigation property
-        public virtual HashSet<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
     }
 
 }

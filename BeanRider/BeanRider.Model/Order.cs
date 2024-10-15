@@ -9,7 +9,7 @@
         // Foreign key and navigation property
         public required virtual Customer Customer { get; set; }
 
-        public virtual HashSet<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
+        public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
     }
 
     public enum OrderStatus
