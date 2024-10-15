@@ -1,5 +1,6 @@
 ﻿using BeanRider.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace BeanRider.Data.Db
 {
@@ -21,12 +22,14 @@ namespace BeanRider.Data.Db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_conString).UseLazyLoadingProxies();
+            optionsBuilder.UseSqlServer(_conString).UseLazyLoadingProxies().LogTo(x => Debug.WriteLine(x));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Food>().UseTptMappingStrategy();
+
+            //modelBuilder.Entity<Food>().Property(x => x.Name).HasColumnName("FoodName").HasMaxLength(230);
         }
 
     }
