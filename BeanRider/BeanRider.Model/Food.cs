@@ -1,6 +1,6 @@
 ﻿namespace BeanRider.Model
 {
-    public class Food : Entity
+    public abstract class Food : Entity
     {
         public required string Name { get; set; }
         public required decimal Price { get; set; }

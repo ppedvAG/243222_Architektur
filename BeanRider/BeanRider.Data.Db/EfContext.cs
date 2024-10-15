@@ -24,5 +24,10 @@ namespace BeanRider.Data.Db
             optionsBuilder.UseSqlServer(_conString).UseLazyLoadingProxies();
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Food>().UseTptMappingStrategy();
+        }
+
     }
 }
