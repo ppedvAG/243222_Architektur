@@ -1,15 +1,35 @@
-﻿using BeanRider.Data.Db;
+﻿using Autofac;
+using BeanRider.Data.Db;
 using BeanRider.Logic;
 using BeanRider.Model.Contracts;
 using BeanRider.Model.DomainModel;
+using System.Reflection;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine("*** BeanRider v0.1 PREMIUM EDITION ***");
 
 string conString = "Server=(localdb)\\mssqllocaldb;Database=BeanRider_Tests;Trusted_Connection=True;";
 
-IRepository repo = new EfContextRepositoryAdapter(conString);
-OrderService orderService = new OrderService(repo);
+
+//DI per Reflection
+//var path = @"C:\Users\Fred\source\repos\ppedvAG\243222_Architektur\BeanRider\BeanRider.Data.Db\bin\Debug\net8.0\BeanRider.Data.Db.dll";
+//var ass = Assembly.LoadFrom(path);
+//var typeMitRepo = ass.GetTypes().FirstOrDefault(x => x.GetInterfaces().Contains(typeof(IRepository)));
+//IRepository repo = Activator.CreateInstance(typeMitRepo, conString) as IRepository;
+
+//manual DI
+//using IRepository repo = new EfContextRepositoryAdapter(conString);
+
+//DI per AutoFac
+var builder = new ContainerBuilder();
+builder.RegisterType<OrderService>();
+//builder.Register(x => new ConRepo()).As<IRepository>().SingleInstance();
+builder.Register(x => new EfContextRepositoryAdapter(conString)).As<IRepository>().SingleInstance();
+var container = builder.Build();
+
+IRepository repo = container.Resolve<IRepository>();
+
+OrderService orderService = container.Resolve<OrderService>();
 
 foreach (var item in repo.GetAll<Drink>())
 {
@@ -24,3 +44,4 @@ foreach (var item in orderService.GetOpenOrdersThatAreNotVegetarian())
         Console.WriteLine($"\t{orderItem.Food.Name} - {orderItem.Amount} {orderItem.OrderPrice:c} ");
     }
 }
+
