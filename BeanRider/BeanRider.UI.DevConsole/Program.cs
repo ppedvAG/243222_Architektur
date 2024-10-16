@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using BeanRider.Data.Db;
 using BeanRider.Logic;
-using BeanRider.Model.Contracts;
+using BeanRider.Model.Contracts.Data;
 using BeanRider.Model.DomainModel;
 using System.Reflection;
 
@@ -22,14 +22,19 @@ string conString = "Server=(localdb)\\mssqllocaldb;Database=BeanRider_Tests;Trus
 
 //DI per AutoFac
 var builder = new ContainerBuilder();
-builder.RegisterType<OrderService>();
+builder.RegisterType<OrderService>().AsImplementedInterfaces();
+builder.RegisterType<CustomerService>().AsImplementedInterfaces();
 //builder.Register(x => new ConRepo()).As<IRepository>().SingleInstance();
 builder.Register(x => new EfContextRepositoryAdapter(conString)).As<IRepository>().SingleInstance();
 var container = builder.Build();
 
 IRepository repo = container.Resolve<IRepository>();
 
-OrderService orderService = container.Resolve<OrderService>();
+IOrderService orderService = container.Resolve<IOrderService>();
+ICustomerService customerService = container.Resolve<ICustomerService>();
+
+var bestCustomer = customerService.GetCustomerWithMostUmsatz();
+Console.WriteLine($"{bestCustomer.Name}");
 
 foreach (var item in repo.GetAll<Drink>())
 {

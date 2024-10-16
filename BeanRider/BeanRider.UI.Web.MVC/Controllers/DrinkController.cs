@@ -1,4 +1,4 @@
-﻿using BeanRider.Model.Contracts;
+﻿using BeanRider.Model.Contracts.Data;
 using BeanRider.Model.DomainModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,20 +1,20 @@
-﻿using BeanRider.Model.Contracts;
+﻿using BeanRider.Model.Contracts.Data;
 using BeanRider.Model.DomainModel;
 
 namespace BeanRider.Logic
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
-        public IRepository Repository { get; }
+        private readonly IRepository repo;
 
         public OrderService(IRepository repository)
         {
-            Repository = repository;
+            this.repo = repository;
         }
 
         public IEnumerable<Order> GetOpenOrdersThatAreNotVegetarian()
         {
-            return Repository.GetAll<Order>().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
+            return repo.GetAll<Order>().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
         }
 
         public decimal CalculateTotalPrice(Order order)

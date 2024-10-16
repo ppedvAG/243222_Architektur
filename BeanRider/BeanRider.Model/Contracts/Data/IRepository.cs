@@ -1,6 +1,6 @@
 ﻿using BeanRider.Model.DomainModel;
 
-namespace BeanRider.Model.Contracts
+namespace BeanRider.Model.Contracts.Data
 {
     public interface IRepository : IDisposable
     {

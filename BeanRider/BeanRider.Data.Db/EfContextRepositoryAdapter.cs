@@ -1,4 +1,4 @@
-﻿using BeanRider.Model.Contracts;
+﻿using BeanRider.Model.Contracts.Data;
 using BeanRider.Model.DomainModel;
 
 namespace BeanRider.Data.Db

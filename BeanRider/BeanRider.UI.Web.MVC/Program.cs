@@ -1,5 +1,6 @@
 using BeanRider.Data.Db;
-using BeanRider.Model.Contracts;
+using BeanRider.Logic;
+using BeanRider.Model.Contracts.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddControllersWithViews();
 
 string conString = "Server=(localdb)\\mssqllocaldb;Database=BeanRider_Tests;Trusted_Connection=True;";
 builder.Services.AddScoped<IRepository>(x => new EfContextRepositoryAdapter(conString));
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
