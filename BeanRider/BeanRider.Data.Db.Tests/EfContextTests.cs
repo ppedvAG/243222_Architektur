@@ -1,4 +1,9 @@
-﻿using BeanRider.Model;
+﻿using AutoFixture;
+using AutoFixture.Kernel;
+using BeanRider.Model;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace BeanRider.Data.Db.Tests
 {
@@ -108,6 +113,115 @@ namespace BeanRider.Data.Db.Tests
                 var loaded = con.Drinks.Find(coffee.Id);
                 Assert.Null(loaded);
             }
+        }
+
+        [Fact]
+        public void Can_create_Order_with_AutoFixture()
+        {
+            var fix = new Fixture();
+            fix.Behaviors.Add(new OmitOnRecursionBehavior());
+            fix.Customizations.Add(new TypeRelay(typeof(Food), typeof(Eatable)));
+            //fix.Customize<Order>(c => c.Without(x => x.Id)); // Setzt die Order-ID nicht
+            //fix.Customize<OrderItem>(c => c.Without(x => x.Id)); // Für OrderItem
+            //fix.Customize<Customer>(c => c.Without(x => x.Id)); // Für Customer
+            //fix.Customize<Eatable>(c => c.Without(x => x.Id)); // Für Food
+            fix.Customizations.Add(new PropertyNameOmitter(nameof(Entity.Id), nameof(Entity.Created)));
+            var order = fix.Create<Order>();
+
+            using (var con = new EfContext(conString))
+            {
+                con.Database.EnsureCreated();
+                con.Add(order);
+                var rows = con.SaveChanges();
+                rows.Should().BeGreaterThan(10);
+                //Assert.Equal(11, rows);
+            }
+
+            using (var con = new EfContext(conString))
+            {
+                var loaded = con.Orders.Find(order.Id); // lazy lodading, wennn UseLazyLoadingProxies() in config
+
+                //eager loading
+                //var loadQuery = con.Orders.Where(x => x.Id == order.Id);
+                //loadQuery = loadQuery.Include(x => x.Customer);
+                //loadQuery = loadQuery.Include(x => x.Items).ThenInclude(x => x.Food);
+                //var loaded = loadQuery.FirstOrDefault();
+
+                //explizit loading
+                //var loaded = con.Orders.Find(order.Id);
+                //con.Entry(loaded).Reference(x=>x.Customer).Load();
+                //con.Entry(loaded).Collection(x => x.Items).Load();
+
+                loaded.Should().NotBeNull().And.BeEquivalentTo(order, x => x.IgnoringCyclicReferences());
+            }
+        }
+
+        [Fact]
+        public void Customer_can_not_be_deleted_if_it_has_orders()
+        {
+            var customer = new Customer() { Name = "Hans", Number = "123" };
+            var order = new Order() { Customer = customer };
+            using (var con = new EfContext(conString))
+            {
+                con.Add(customer);
+                con.Add(order);
+                con.SaveChanges();
+            }
+
+            using (var con = new EfContext(conString))
+            {
+                var loaded = con.Customers.Find(customer.Id);
+                con.Remove(loaded!);
+
+                Action act = () => con.SaveChanges();
+                act.Should().Throw<DbUpdateException>();
+            }
+        }
+
+        [Fact]
+        public void Customer_can_be_deleted_if_order_are_purged()
+        {
+            var customer = new Customer() { Name = "Fritz", Number = "321" };
+            var order = new Order() { Customer = customer };
+
+            using (var con = new EfContext(conString))
+            {
+                con.Add(customer);
+                con.Add(order);
+                con.SaveChanges();
+            }
+
+            using (var con = new EfContext(conString))
+            {
+                var loaded = con.Customers.Find(customer.Id);
+                foreach (var item in loaded!.Orders)
+                {
+                    con.Remove(item);
+                }
+                con.Remove(loaded!);
+
+                Action act = () => con.SaveChanges();
+                act.Should().NotThrow<DbUpdateException>();
+            }
+        }
+    }
+
+    internal class PropertyNameOmitter : ISpecimenBuilder
+    {
+        private readonly IEnumerable<string> names;
+
+        internal PropertyNameOmitter(params string[] names)
+        {
+            this.names = names;
+        }
+
+        public object Create(object request, ISpecimenContext context)
+        {
+            var propInfo = request as PropertyInfo;
+            if (propInfo != null && names.Contains(propInfo.Name))
+                return new OmitSpecimen();
+
+            return new NoSpecimen();
         }
     }
 }

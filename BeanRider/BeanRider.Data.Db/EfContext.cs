@@ -29,6 +29,8 @@ namespace BeanRider.Data.Db
         {
             modelBuilder.Entity<Food>().UseTptMappingStrategy();
 
+            modelBuilder.Entity<Customer>().HasMany(x => x.Orders).WithOne(x => x.Customer).OnDelete(DeleteBehavior.Restrict);
+
             //modelBuilder.Entity<Food>().Property(x => x.Name).HasColumnName("FoodName").HasMaxLength(230);
         }
 
