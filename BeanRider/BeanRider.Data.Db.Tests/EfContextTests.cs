@@ -204,6 +204,31 @@ namespace BeanRider.Data.Db.Tests
                 act.Should().NotThrow<DbUpdateException>();
             }
         }
+
+        [Fact]
+        public void Changing_Customer_by_2_users_should_throw_Ex__testing_Optimistic_Concurrency()
+        {
+            var customer = new Customer() { Name = "Werner", Number = "321" };
+            using (var con = new EfContext(conString))
+            {
+                con.Add(customer);
+                con.SaveChanges();
+            }
+
+            using var con1 = new EfContext(conString);
+            var loaded1 = con1.Customers.Find(customer.Id);
+
+            using var con2 = new EfContext(conString);
+            var loaded2 = con2.Customers.Find(customer.Id);
+
+            loaded1.Name = "Fred";
+            loaded2.Name = "Wilma";
+
+            con1.SaveChanges();
+            Action act = () => con2.SaveChanges();
+            act.Should().Throw<DbUpdateConcurrencyException>();
+
+        }
     }
 
     internal class PropertyNameOmitter : ISpecimenBuilder

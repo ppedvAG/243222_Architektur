@@ -32,7 +32,34 @@ namespace BeanRider.Data.Db
             modelBuilder.Entity<Customer>().HasMany(x => x.Orders).WithOne(x => x.Customer).OnDelete(DeleteBehavior.Restrict);
 
             //modelBuilder.Entity<Food>().Property(x => x.Name).HasColumnName("FoodName").HasMaxLength(230);
+
+            modelBuilder.Entity<Customer>().Property(x => x.Modified).IsConcurrencyToken();
+            //modelBuilder.<Entity>().Property(x => x.Modified).IsConcurrencyToken();
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    if (entry.Entity is Entity e)
+                    {
+                        e.Created = e.Modified = System.DateTime.Now;
+                    }
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    if (entry.Entity is Entity e)
+                    {
+                        e.Modified = System.DateTime.Now;
+                    }
+                }
+            }
+
+            return base.SaveChanges();
         }
 
     }
+
 }
