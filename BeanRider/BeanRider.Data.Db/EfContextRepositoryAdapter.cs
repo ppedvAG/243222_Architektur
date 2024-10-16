@@ -1,5 +1,6 @@
 ﻿using BeanRider.Model.Contracts.Data;
 using BeanRider.Model.DomainModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeanRider.Data.Db
 {
@@ -20,6 +21,11 @@ namespace BeanRider.Data.Db
             _context.Add(entity);
         }
 
+        public Customer CustomerWithMostUmsatz()
+        {
+            return _context.Customers.FromSql($"exec sp_BestCustomer").ToList().FirstOrDefault();
+        }
+
         public void Delete<T>(T entity) where T : Entity
         {
             _context.Remove(entity);
@@ -35,9 +41,16 @@ namespace BeanRider.Data.Db
             return _context.Set<T>().ToList();
         }
 
+
+
         public T? GetById<T>(int id) where T : Entity
         {
             return _context.Set<T>().Find(id);
+        }
+
+        public IQueryable<T> Query<T>() where T : Entity
+        {
+            return _context.Set<T>();
         }
 
         public void SaveChanges()

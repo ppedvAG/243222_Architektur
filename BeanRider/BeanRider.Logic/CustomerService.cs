@@ -16,10 +16,10 @@ namespace BeanRider.Logic
 
         public Customer GetCustomerWithMostUmsatz()
         {
-            return repo.GetAll<Customer>().GroupBy(x => x.Orders.Sum(o => orderService.CalculateTotalPrice(o)))
+            return repo.Query<Customer>().ToList().GroupBy(x => x.Orders.Sum(o => orderService.CalculateTotalPrice(o)))
                                           .OrderByDescending(x => x.Key)
                                           .FirstOrDefault()
-                                          .FirstOrDefault();
+                                          .FirstOrDefault();    
         }
     }
 }

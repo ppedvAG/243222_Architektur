@@ -22,10 +22,10 @@ string conString = "Server=(localdb)\\mssqllocaldb;Database=BeanRider_Tests;Trus
 
 //DI per AutoFac
 var builder = new ContainerBuilder();
+builder.Register(x => new EfContextRepositoryAdapter(conString)).As<IRepository>().SingleInstance();
 builder.RegisterType<OrderService>().AsImplementedInterfaces();
 builder.RegisterType<CustomerService>().AsImplementedInterfaces();
 //builder.Register(x => new ConRepo()).As<IRepository>().SingleInstance();
-builder.Register(x => new EfContextRepositoryAdapter(conString)).As<IRepository>().SingleInstance();
 var container = builder.Build();
 
 IRepository repo = container.Resolve<IRepository>();
@@ -33,12 +33,14 @@ IRepository repo = container.Resolve<IRepository>();
 IOrderService orderService = container.Resolve<IOrderService>();
 ICustomerService customerService = container.Resolve<ICustomerService>();
 
-var bestCustomer = customerService.GetCustomerWithMostUmsatz();
+//var bestCustomer = customerService.GetCustomerWithMostUmsatz();
+var bestCustomer = repo.CustomerWithMostUmsatz();
 Console.WriteLine($"{bestCustomer.Name}");
 
-foreach (var item in repo.GetAll<Drink>())
+foreach (var item in repo.Query<Drink>().Where(x => !x.Alc).OrderByDescending(x => x.KCal).ToList())
 {
     Console.WriteLine($"{item.Name} - {item.Price}");
+    Console.WriteLine($"Orderd:  {item.OrderItems.Sum(x => x.Amount)}");
 }
 
 foreach (var item in orderService.GetOpenOrdersThatAreNotVegetarian())

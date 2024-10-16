@@ -113,6 +113,11 @@ namespace BeanRider.Logic.Tests
             throw new NotImplementedException();
         }
 
+        public Customer CustomerWithMostUmsatz()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Delete<T>(T entity) where T : Entity
         {
             throw new NotImplementedException();
@@ -154,6 +159,11 @@ namespace BeanRider.Logic.Tests
         }
 
         public T? GetById<T>(int id) where T : Entity
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<T> Query<T>() where T : Entity
         {
             throw new NotImplementedException();
         }
