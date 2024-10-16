@@ -1,4 +1,4 @@
-﻿namespace BeanRider.Model
+﻿namespace BeanRider.Model.DomainModel
 {
     public abstract class Entity
     {

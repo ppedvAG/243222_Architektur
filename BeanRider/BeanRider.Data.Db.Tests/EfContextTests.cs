@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using AutoFixture.Kernel;
-using BeanRider.Model;
+using BeanRider.Model.DomainModel;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;

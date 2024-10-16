@@ -1,4 +1,4 @@
-﻿using BeanRider.Model;
+﻿using BeanRider.Model.DomainModel;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 

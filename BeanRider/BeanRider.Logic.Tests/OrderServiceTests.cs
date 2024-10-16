@@ -1,4 +1,5 @@
-﻿using BeanRider.Model;
+﻿using BeanRider.Model.Contracts;
+using BeanRider.Model.DomainModel;
 using FluentAssertions;
 
 namespace BeanRider.Logic.Tests
@@ -8,7 +9,7 @@ namespace BeanRider.Logic.Tests
         [Fact]
         public void CalculateTotalPrice_should_throw_ArgumentEx_if_order_is_null()
         {
-            var orderService = new OrderService();
+            var orderService = new OrderService(null!);
 
             Action act = () => orderService.CalculateTotalPrice(null!);
 
@@ -18,7 +19,7 @@ namespace BeanRider.Logic.Tests
         [Fact]
         public void CalculateTotalPrice_should_return_0_if_order_has_no_items()
         {
-            var orderService = new OrderService();
+            var orderService = new OrderService(null!);
             var order = new Order() { Customer = new Customer() { Name = "Fred", Number = "4" } };
             var totalPrice = orderService.CalculateTotalPrice(order);
             totalPrice.Should().Be(0);
@@ -28,7 +29,7 @@ namespace BeanRider.Logic.Tests
         public void CalculateTotalPrice_ShouldReturnCorrectTotalPrice()
         {
             // Arrange
-            var orderService = new OrderService();
+            var orderService = new OrderService(null!);
             var order = new Order
             {
                 Customer = new Customer() { Name = "Fred", Number = "4" }
@@ -58,5 +59,78 @@ namespace BeanRider.Logic.Tests
             totalPrice.Should().Be(32);
         }
 
+
+        [Fact]
+        public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian()
+        {
+            var orderService = new OrderService(new TestRepo());
+
+            var result = orderService.GetOpenOrdersThatAreNotVegetarian();
+
+            result.Should().HaveCount(1);
+        }
+    }
+
+    class TestRepo : IRepository
+    {
+        public void Add<T>(T entity) where T : Entity
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete<T>(T entity) where T : Entity
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> GetAll<T>() where T : Entity
+        {
+            if (typeof(T) == typeof(Order))
+            {
+                var customer = new Customer { Name = "Fred", Number = "4" };
+                var o1 = new Order() { Customer = customer,Status= OrderStatus.Pending };
+                o1.Items = new List<OrderItem> {
+                             new OrderItem
+                            {
+                                Food = new Drink { Vegetarian = true, Name="Bier", Price=4 },
+                                Amount = 1,
+                                Order = o1
+                            }
+                };
+
+                var o2 = new Order() { Customer = customer, Status = OrderStatus.Pending };
+                o2.Items = new List<OrderItem> {
+                            new OrderItem
+                            {
+                                Food = new Drink { Vegetarian = false, Name="Wein", Price=4 },
+                                Amount = 1,
+                                Order = o1
+                            }
+                };
+                return new[] { o1, o2 }.Cast<T>();
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public T? GetById<T>(int id) where T : Entity
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveChanges()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update<T>(T entity) where T : Entity
+        {
+            throw new NotImplementedException();
+        }
     }
 }

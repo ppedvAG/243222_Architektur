@@ -1,11 +1,11 @@
-﻿namespace BeanRider.Model
+﻿namespace BeanRider.Model.DomainModel
 {
     public class Order : Entity
     {
         public DateTime Time { get; set; } = DateTime.Now;
         public bool ToGo { get; set; }
         public OrderStatus Status { get; set; }
-        
+
         // Foreign key and navigation property
         public required virtual Customer Customer { get; set; }
 
