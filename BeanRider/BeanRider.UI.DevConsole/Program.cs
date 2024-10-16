@@ -33,8 +33,8 @@ IRepository repo = container.Resolve<IRepository>();
 IOrderService orderService = container.Resolve<IOrderService>();
 ICustomerService customerService = container.Resolve<ICustomerService>();
 
-//var bestCustomer = customerService.GetCustomerWithMostUmsatz();
-var bestCustomer = repo.CustomerWithMostUmsatz();
+var bestCustomer = customerService.GetCustomerWithMostUmsatz();
+//var bestCustomer = repo.CustomerWithMostUmsatz();
 Console.WriteLine($"{bestCustomer.Name}");
 
 foreach (var item in repo.Query<Drink>().Where(x => !x.Alc).OrderByDescending(x => x.KCal).ToList())

@@ -95,14 +95,16 @@ namespace BeanRider.Logic.Tests
                             }
                 };
             var repoMock = new Mock<IRepository>();
-            repoMock.Setup(x => x.GetAll<Order>()).Returns(new[] { o1, o2 });
+            //repoMock.Setup(x => x.GetAll<Order>()).Returns(new[] { o1, o2 });
+            repoMock.Setup(x => x.Query<Order>()).Returns(new[] { o1, o2 }.AsQueryable());
 
             var orderService = new OrderService(repoMock.Object);
 
             var result = orderService.GetOpenOrdersThatAreNotVegetarian();
 
             result.Should().HaveCount(1);
-            repoMock.Verify(x => x.GetAll<Order>(), Times.Once);
+            repoMock.Verify(x => x.GetAll<Order>(), Times.Never);
+            repoMock.Verify(x => x.Query<Order>(), Times.Once);
         }
     }
 

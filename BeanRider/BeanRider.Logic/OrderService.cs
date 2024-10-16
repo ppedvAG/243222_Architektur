@@ -14,7 +14,7 @@ namespace BeanRider.Logic
 
         public IEnumerable<Order> GetOpenOrdersThatAreNotVegetarian()
         {
-            return repo.GetAll<Order>().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
+            return repo.Query<Order>().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
         }
 
         public decimal CalculateTotalPrice(Order order)
