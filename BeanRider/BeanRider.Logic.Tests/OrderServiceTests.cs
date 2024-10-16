@@ -1,6 +1,7 @@
 ﻿using BeanRider.Model.Contracts;
 using BeanRider.Model.DomainModel;
 using FluentAssertions;
+using Moq;
 
 namespace BeanRider.Logic.Tests
 {
@@ -61,13 +62,47 @@ namespace BeanRider.Logic.Tests
 
 
         [Fact]
-        public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian()
+        public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian_Mit_TestReo()
         {
             var orderService = new OrderService(new TestRepo());
 
             var result = orderService.GetOpenOrdersThatAreNotVegetarian();
 
             result.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian_moq()
+        {
+            var customer = new Customer { Name = "Fred", Number = "4" };
+            var o1 = new Order() { Customer = customer, Status = OrderStatus.Pending };
+            o1.Items = new List<OrderItem> {
+                             new OrderItem
+                            {
+                                Food = new Drink { Vegetarian = true, Name="Bier", Price=4 },
+                                Amount = 1,
+                                Order = o1
+                            }
+                };
+
+            var o2 = new Order() { Customer = customer, Status = OrderStatus.Pending };
+            o2.Items = new List<OrderItem> {
+                            new OrderItem
+                            {
+                                Food = new Drink { Vegetarian = false, Name="Wein", Price=4 },
+                                Amount = 1,
+                                Order = o1
+                            }
+                };
+            var repoMock = new Mock<IRepository>();
+            repoMock.Setup(x => x.GetAll<Order>()).Returns(new[] { o1, o2 });
+
+            var orderService = new OrderService(repoMock.Object);
+
+            var result = orderService.GetOpenOrdersThatAreNotVegetarian();
+
+            result.Should().HaveCount(1);
+            repoMock.Verify(x => x.GetAll<Order>(), Times.Once);
         }
     }
 
@@ -93,7 +128,7 @@ namespace BeanRider.Logic.Tests
             if (typeof(T) == typeof(Order))
             {
                 var customer = new Customer { Name = "Fred", Number = "4" };
-                var o1 = new Order() { Customer = customer,Status= OrderStatus.Pending };
+                var o1 = new Order() { Customer = customer, Status = OrderStatus.Pending };
                 o1.Items = new List<OrderItem> {
                              new OrderItem
                             {
