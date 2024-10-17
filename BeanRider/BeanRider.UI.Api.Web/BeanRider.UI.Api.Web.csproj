@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>432deb32-3cc5-4691-a35a-7080d1237e5e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeanRider.Data.Db\BeanRider.Data.Db.csproj" />
+    <ProjectReference Include="..\BeanRider.Logic\BeanRider.Logic.csproj" />
+    <ProjectReference Include="..\BeanRider.Model\BeanRider.Model.csproj" />
+  </ItemGroup>
+
+</Project>

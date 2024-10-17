@@ -45,6 +45,7 @@ namespace BeanRider.Data.Db
                 {
                     if (entry.Entity is Entity e)
                     {
+                        
                         e.Created = e.Modified = System.DateTime.Now;
                     }
                 }

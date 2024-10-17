@@ -1,0 +1,25 @@
+@BeanRider.UI.Api.Web_HostAddress = https://localhost:7116
+
+GET {{BeanRider.UI.Api.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{BeanRider.UI.Api.Web_HostAddress}}/api/orders
+
+###
+
+GET {{BeanRider.UI.Api.Web_HostAddress}}/api/orders
+
+###
+
+GET {{BeanRider.UI.Api.Web_HostAddress}}/api/orders
+
+###
+
+POST {{BeanRider.UI.Api.Web_HostAddress}}/api/orders
+Content-Type: application/json
+
+"string"
+
+###

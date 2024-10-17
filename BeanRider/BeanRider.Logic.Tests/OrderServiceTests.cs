@@ -167,6 +167,9 @@ namespace BeanRider.Logic.Tests
 
         public IQueryable<T> Query<T>() where T : Entity
         {
+            if (typeof(T) == typeof(Order))
+                return GetAll<T>().AsQueryable();   
+
             throw new NotImplementedException();
         }
 

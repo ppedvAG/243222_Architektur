@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeanRider.UI.DevConsole", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeanRider.UI.Web.MVC", "BeanRider.UI.Web.MVC\BeanRider.UI.Web.MVC.csproj", "{A443ECE5-A161-49F7-87E5-006C6A0634F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeanRider.UI.Api.Web", "BeanRider.UI.Api.Web\BeanRider.UI.Api.Web.csproj", "{F29CA460-E154-4A7F-A35A-7A9677246AF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A443ECE5-A161-49F7-87E5-006C6A0634F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A443ECE5-A161-49F7-87E5-006C6A0634F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A443ECE5-A161-49F7-87E5-006C6A0634F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F29CA460-E154-4A7F-A35A-7A9677246AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F29CA460-E154-4A7F-A35A-7A9677246AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F29CA460-E154-4A7F-A35A-7A9677246AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F29CA460-E154-4A7F-A35A-7A9677246AF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
