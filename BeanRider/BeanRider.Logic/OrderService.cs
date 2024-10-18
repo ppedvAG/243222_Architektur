@@ -5,16 +5,16 @@ namespace BeanRider.Logic
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrderService(IRepository repository)
+        public OrderService(IUnitOfWork unitOfWork)
         {
-            this.repo = repository;
+            this._unitOfWork = unitOfWork;
         }
 
         public IEnumerable<Order> GetOpenOrdersThatAreNotVegetarian()
         {
-            return repo.Query<Order>().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
+            return _unitOfWork.OrderRepo.Query().Where(o => o.Status == OrderStatus.Pending && o.Items.Any(i => !i.Food.Vegetarian));
         }
 
         public decimal CalculateTotalPrice(Order order)

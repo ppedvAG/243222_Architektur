@@ -61,15 +61,15 @@ namespace BeanRider.Logic.Tests
         }
 
 
-        [Fact]
-        public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian_Mit_TestReo()
-        {
-            var orderService = new OrderService(new TestRepo());
+        //[Fact]
+        //public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian_Mit_TestReo()
+        //{
+        //    var orderService = new OrderService(new TestRepo());
 
-            var result = orderService.GetOpenOrdersThatAreNotVegetarian();
+        //    var result = orderService.GetOpenOrdersThatAreNotVegetarian();
 
-            result.Should().HaveCount(1);
-        }
+        //    result.Should().HaveCount(1);
+        //}
 
         [Fact]
         public void GetOpenOrdersThatAreNotVegetarian_2_order_with_1_non_vegetarian_moq()
@@ -94,93 +94,96 @@ namespace BeanRider.Logic.Tests
                                 Order = o1
                             }
                 };
-            var repoMock = new Mock<IRepository>();
-            //repoMock.Setup(x => x.GetAll<Order>()).Returns(new[] { o1, o2 });
-            repoMock.Setup(x => x.Query<Order>()).Returns(new[] { o1, o2 }.AsQueryable());
 
-            var orderService = new OrderService(repoMock.Object);
+            var uowMock = new Mock<IUnitOfWork>();
+            //var repoMock = new Mock<IRepository>();
+            //repoMock.Setup(x => x.GetAll<Order>()).Returns(new[] { o1, o2 });
+            //repoMock.Setup(x => x.Query<Order>()).Returns(new[] { o1, o2 }.AsQueryable());
+            uowMock.Setup(x => x.OrderRepo.Query()).Returns(new[] { o1, o2 }.AsQueryable());
+
+            var orderService = new OrderService(uowMock.Object);
 
             var result = orderService.GetOpenOrdersThatAreNotVegetarian();
 
             result.Should().HaveCount(1);
-            repoMock.Verify(x => x.GetAll<Order>(), Times.Never);
-            repoMock.Verify(x => x.Query<Order>(), Times.Once);
+            uowMock.Verify(x => x.OrderRepo.GetAll(), Times.Never);
+            uowMock.Verify(x => x.OrderRepo.Query(), Times.Once);
         }
     }
 
-    class TestRepo : IRepository
-    {
-        public void Add<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
+    //class TestRepo : IRepository
+    //{
+    //    public void Add<T>(T entity) where T : Entity
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public Customer CustomerWithMostUmsatz()
-        {
-            throw new NotImplementedException();
-        }
+    //    public Customer CustomerWithMostUmsatz()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void Delete<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
+    //    public void Delete<T>(T entity) where T : Entity
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+    //    public void Dispose()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public IEnumerable<T> GetAll<T>() where T : Entity
-        {
-            if (typeof(T) == typeof(Order))
-            {
-                var customer = new Customer { Name = "Fred", Number = "4" };
-                var o1 = new Order() { Customer = customer, Status = OrderStatus.Pending };
-                o1.Items = new List<OrderItem> {
-                             new OrderItem
-                            {
-                                Food = new Drink { Vegetarian = true, Name="Bier", Price=4 },
-                                Amount = 1,
-                                Order = o1
-                            }
-                };
+    //    public IEnumerable<T> GetAll<T>() where T : Entity
+    //    {
+    //        if (typeof(T) == typeof(Order))
+    //        {
+    //            var customer = new Customer { Name = "Fred", Number = "4" };
+    //            var o1 = new Order() { Customer = customer, Status = OrderStatus.Pending };
+    //            o1.Items = new List<OrderItem> {
+    //                         new OrderItem
+    //                        {
+    //                            Food = new Drink { Vegetarian = true, Name="Bier", Price=4 },
+    //                            Amount = 1,
+    //                            Order = o1
+    //                        }
+    //            };
 
-                var o2 = new Order() { Customer = customer, Status = OrderStatus.Pending };
-                o2.Items = new List<OrderItem> {
-                            new OrderItem
-                            {
-                                Food = new Drink { Vegetarian = false, Name="Wein", Price=4 },
-                                Amount = 1,
-                                Order = o1
-                            }
-                };
-                return new[] { o1, o2 }.Cast<T>();
-            }
+    //            var o2 = new Order() { Customer = customer, Status = OrderStatus.Pending };
+    //            o2.Items = new List<OrderItem> {
+    //                        new OrderItem
+    //                        {
+    //                            Food = new Drink { Vegetarian = false, Name="Wein", Price=4 },
+    //                            Amount = 1,
+    //                            Order = o1
+    //                        }
+    //            };
+    //            return new[] { o1, o2 }.Cast<T>();
+    //        }
 
-            throw new NotImplementedException();
-        }
+    //        throw new NotImplementedException();
+    //    }
 
-        public T? GetById<T>(int id) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
+    //    public T? GetById<T>(int id) where T : Entity
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public IQueryable<T> Query<T>() where T : Entity
-        {
-            if (typeof(T) == typeof(Order))
-                return GetAll<T>().AsQueryable();   
+    //    public IQueryable<T> Query<T>() where T : Entity
+    //    {
+    //        if (typeof(T) == typeof(Order))
+    //            return GetAll<T>().AsQueryable();   
 
-            throw new NotImplementedException();
-        }
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SaveChanges()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void Update<T>(T entity) where T : Entity
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    public void Update<T>(T entity) where T : Entity
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }
